@@ -40,14 +40,21 @@ class Data
     $node = &$this->data; // Référence pour modification directe
     $nodes = explode('.', $path); // Découpe la chaîne en segments
 
-    // Traverse ou crée les niveaux du tableau
     foreach ($nodes as $key) {
-      if (!isset($node[$key]) || !is_array($node[$key])) {
-        $node[$key] = []; // Crée le nœud s'il n'existe pas
+      // Si la clé est numérique, on force la conversion en entier
+      $key = is_numeric($key) ? (int)$key : $key;
+
+      // Si le nœud n'existe pas ou n'est pas conforme, on initialise
+      if (!isset($node[$key]) || (!is_array($node[$key]) && $key !== (int)$key)) {
+        $node[$key] = [];
       }
+
       $node = &$node[$key]; // Passe au niveau suivant
     }
+
+    // Assigne la valeur au nœud final
     $node = $value;
+
     return $this;
   }
 
@@ -121,7 +128,7 @@ class Data
    * Becomes:
    *   'key.key2.key3' => 'value'
    */
-  protected function flatten(?array $data = null): array
+  protected function flatten(?array $data = null, string $separator = '.'): array
   {
     if (null === $data) {
       $data = $this->data;
@@ -129,13 +136,16 @@ class Data
 
     $result = [];
     foreach ($data as $key => $value) {
-      if (\is_array($value)) {
-        foreach ($this->flatten($value) as $k => $v) {
-          if (null !== $v) {
-            $result[$key . '.' . $k] = $v;
-          }
+      // Gestion des clés numériques
+      $key = is_numeric($key) ? (int)$key : $key;
+
+      if (is_array($value)) {
+        // Appel récursif pour les sous-niveaux
+        foreach ($this->flatten($value, $separator) as $subKey => $subValue) {
+          $result[$key . $separator . $subKey] = $subValue;
         }
       } elseif (null !== $value) {
+        // Ajout direct si la valeur n'est pas un tableau
         $result[$key] = $value;
       }
     }
@@ -153,8 +163,7 @@ class Data
    */
   protected function unflatten(?array $data = null): array
   {
-    $data = $this->flatten($data);
-
+    $data = $this->flatten($data); // Aplatit les données pour garantir un traitement cohérent
     $result = [];
 
     foreach ($data as $flatKey => $value) {
@@ -162,6 +171,9 @@ class Data
       $current = &$result; // Référence pour construire le tableau multidimensionnel
 
       foreach ($keys as $key) {
+        // Gestion des clés numériques
+        $key = is_numeric($key) ? (int)$key : $key;
+
         if (!isset($current[$key]) || !is_array($current[$key])) {
           $current[$key] = []; // Crée une nouvelle sous-structure si elle n'existe pas
         }
@@ -182,17 +194,23 @@ class Data
 
     // Traverse les niveaux du tableau
     foreach ($nodes as $key) {
+      // Gestion des clés numériques
+      $key = is_numeric($key) ? (int)$key : $key;
+
       if (!isset($node[$key]) || !is_array($node[$key])) {
-        return false; // Retourne false si une clé intermédiaire est manquante ou non valide
+        $null = null; // Pour gérer la référence dans un cas d'échec
+        return $null; // Retourne une référence nulle si une clé intermédiaire est manquante
       }
-      $node = &$node[$key];
+      $node = &$node[$key]; // Descend d'un niveau
     }
 
     // Gestion de la clé finale
+    $lastKey = is_numeric($lastKey) ? (int)$lastKey : $lastKey;
     if (isset($node[$lastKey])) {
-      return $node[$lastKey]; // Retourne la valeur
+      return $node[$lastKey]; // Retourne la référence à la valeur
     }
 
-    return false; // Retourne false si la clé finale n'existe pas
+    $null = null; // Retourne une référence nulle si la clé finale n'existe pas
+    return $null;
   }
 }
