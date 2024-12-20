@@ -113,28 +113,6 @@ class Data
     return $this->data;
   }
 
-  private function &fetchNode(string $path): mixed
-  {
-    $node = &$this->data; // Référence pour modification directe
-    $nodes = explode('.', $path); // Découpe la chaîne en segments
-    $lastKey = array_pop($nodes); // Récupère la dernière clé séparément
-
-    // Traverse les niveaux du tableau
-    foreach ($nodes as $key) {
-      if (!isset($node[$key]) || !is_array($node[$key])) {
-        return false; // Retourne false si une clé intermédiaire est manquante ou non valide
-      }
-      $node = &$node[$key];
-    }
-
-    // Gestion de la clé finale
-    if (isset($node[$lastKey])) {
-      return $node[$lastKey]; // Retourne la valeur
-    }
-
-    return false; // Retourne false si la clé finale n'existe pas
-  }
-
   /**
    * Flattens a nested array
    *
@@ -143,7 +121,7 @@ class Data
    * Becomes:
    *   'key.key2.key3' => 'value'
    */
-  private function flatten(?array $data = null): array
+  protected function flatten(?array $data = null): array
   {
     if (null === $data) {
       $data = $this->data;
@@ -173,7 +151,7 @@ class Data
    * Becomes:
    *   'key' => ['key2' => ['key3' => 'value']]
    */
-  private function unflatten(?array $data = null): array
+  protected function unflatten(?array $data = null): array
   {
     $data = $this->flatten($data);
 
@@ -194,5 +172,27 @@ class Data
     }
 
     return $result;
+  }
+
+  private function &fetchNode(string $path): mixed
+  {
+    $node = &$this->data; // Référence pour modification directe
+    $nodes = explode('.', $path); // Découpe la chaîne en segments
+    $lastKey = array_pop($nodes); // Récupère la dernière clé séparément
+
+    // Traverse les niveaux du tableau
+    foreach ($nodes as $key) {
+      if (!isset($node[$key]) || !is_array($node[$key])) {
+        return false; // Retourne false si une clé intermédiaire est manquante ou non valide
+      }
+      $node = &$node[$key];
+    }
+
+    // Gestion de la clé finale
+    if (isset($node[$lastKey])) {
+      return $node[$lastKey]; // Retourne la valeur
+    }
+
+    return false; // Retourne false si la clé finale n'existe pas
   }
 }
