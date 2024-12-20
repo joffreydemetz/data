@@ -12,7 +12,7 @@ The `Data` class is a utility for managing deeply nested associative arrays and 
 
 ## Installation
 
-To include this class in your project, use composer:
+Add the package to your project using **Composer**:
 
 ```bash
 composer require jdz/data
@@ -99,8 +99,6 @@ $data->erase('user.name.middle');
 ```
 
 ## Methods
-
-### Public Methods
 
 | Method       | Description |
 |--------------|-------------|
