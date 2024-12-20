@@ -1,4 +1,4 @@
-# Data Class
+# Data
 
 The `Data` class is a utility for managing deeply nested associative arrays and objects. It allows for manipulation, traversal, and transformation of data using dot notation for keys. This is particularly useful for complex data structures where direct access or modification is cumbersome.
 
