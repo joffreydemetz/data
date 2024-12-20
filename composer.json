@@ -1,0 +1,26 @@
+{
+    "name": "jdz/data",
+    "type": "library",
+    "description": "JDZ dataset manager",
+    "keywords": [
+        "JDZ",
+        "dataset",
+        "utilities",
+        "config"
+    ],
+    "homepage": "https://jdz.joffreydemetz.com/data/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joffrey Demetz",
+            "email": "joffrey.demetz@gmail.com",
+            "homepage": "https://joffreydemetz.com",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "JDZ\\Utils\\": "src"
+        }
+    }
+}
