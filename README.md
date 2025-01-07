@@ -113,8 +113,6 @@ $data->erase('user.name.middle');
 | `has()`      | Checks if a value exists at the specified path. |
 | `erase()`    | Deletes a value at the specified path. |
 | `all()`      | Returns all stored data. |
-| `flatten()`  | Flattens the data into a single-dimensional array. |
-| `unflatten()`| Converts a flattened array back into a nested structure. |
 
 ## License
 
