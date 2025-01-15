@@ -60,10 +60,9 @@ class Data
 
   public function get(string $path, mixed $default = null): mixed
   {
-    if (false !== ($node = $this->fetchNode($path))) {
-      return $node;
-    }
-    return $default;
+    $node = $this->fetchNode($path);
+
+    return null === $node ? $default : $node;
   }
 
   public function getBool(string $path, bool $default = false): bool
