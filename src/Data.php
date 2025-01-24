@@ -103,7 +103,7 @@ class Data
 
   public function has(string $path): bool
   {
-    return false !== ($this->fetchNode($path));
+    return null !== ($this->fetchNode($path));
   }
 
   public function erase(string $path)
