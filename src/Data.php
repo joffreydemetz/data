@@ -16,7 +16,7 @@ namespace JDZ\Utils;
  */
 class Data
 {
-  private array $data = [];
+  protected array $data = [];
 
   public function sets(array $data, bool $merge = true)
   {
