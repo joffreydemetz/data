@@ -108,9 +108,27 @@ class Data
 
   public function erase(string $path)
   {
-    if ($node = $this->fetchNode($path)) {
-      unset($node);
+    $node = &$this->data; // Référence pour modification directe
+    $nodes = explode('.', $path); // Découpe la chaîne en segments
+    $lastKey = array_pop($nodes); // Récupère la dernière clé séparément
+
+    // Traverse les niveaux du tableau
+    foreach ($nodes as $key) {
+      // Gestion des clés numériques
+      $key = is_numeric($key) ? (int)$key : $key;
+
+      if (!isset($node[$key]) || !is_array($node[$key])) {
+        return $this; // Si une clé intermédiaire est manquante, on arrête
+      }
+      $node = &$node[$key]; // Descend d'un niveau
     }
+
+    // Gestion de la clé finale
+    $lastKey = is_numeric($lastKey) ? (int)$lastKey : $lastKey;
+    if (isset($node[$lastKey])) {
+      unset($node[$lastKey]); // Supprime la clé finale
+    }
+
     return $this;
   }
 
