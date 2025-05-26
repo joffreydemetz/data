@@ -16,7 +16,14 @@ namespace JDZ\Utils;
  */
 class Data
 {
+  protected bool $preserveNulls = false;
   protected array $data = [];
+
+  public function preserveNulls(bool $preserve = true)
+  {
+    $this->preserveNulls = $preserve;
+    return $this;
+  }
 
   public function sets(array $data, bool $merge = true)
   {
@@ -161,7 +168,7 @@ class Data
         foreach ($this->flatten($value, $separator) as $subKey => $subValue) {
           $result[$key . $separator . $subKey] = $subValue;
         }
-      } elseif (null !== $value) {
+      } elseif (null !== $value || $this->preserveNulls) {
         // Ajout direct si la valeur n'est pas un tableau
         $result[$key] = $value;
       }
