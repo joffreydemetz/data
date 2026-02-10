@@ -1,20 +1,5 @@
-# Composer
 /vendor/
 composer.lock
 
-# PHPUnit
-.phpunit.result.cache
+/.phpunit.cache/
 /coverage/
-
-# IDE
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
