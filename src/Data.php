@@ -13,7 +13,7 @@ namespace JDZ\Utils;
  * 
  * @author Joffrey Demetz <joffrey.demetz@gmail.com>
  */
-class Data
+class Data implements DataInterface
 {
   protected bool $preserveNulls = false;
   protected array $data = [];
@@ -24,7 +24,7 @@ class Data
    * @param bool $preserve Whether to preserve null values
    * @return self
    */
-  public function withPreserveNulls(bool $preserve = true)
+  public function withPreserveNulls(bool $preserve = true): self
   {
     $this->preserveNulls = $preserve;
     return $this;
