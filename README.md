@@ -10,7 +10,7 @@ A PHP utility class for manipulating nested arrays using dot notation.
 - 🎨 **Typed Getters**: Type-safe retrieval with `getBool()`, `getInt()`, `getArray()`
 - 🔗 **Method Chaining**: Fluent interface for elegant code
 - 🎭 **Null Handling**: Optional null value preservation
-- ✅ **Type Safe**: Full PHP 8.0+ type declarations
+- ✅ **Type Safe**: Full PHP 8.2+ type declarations, contract in `JDZ\Utils\DataInterface`
 
 ## Installation
 
@@ -20,7 +20,7 @@ composer require jdz/data
 
 ## Requirements
 
-- PHP 8.0 or higher
+- PHP 8.2 or higher
 
 ## Quick Start
 
@@ -162,14 +162,16 @@ Get all data as an array.
 $allData = $data->all();
 ```
 
-#### `preserveNulls(bool $preserve = true): self`
+#### `withPreserveNulls(bool $preserve = true): self`
 
 Enable or disable null value preservation.
 
 ```php
-$data->preserveNulls(true);
+$data->withPreserveNulls(true);
 $data->set('user.optional', null); // Null is preserved
 ```
+
+`preserveNulls()` is the deprecated name of the same method.
 
 ## Working with Arrays
 
@@ -245,6 +247,12 @@ Run tests with coverage report (HTML):
 composer test-coverage
 # Coverage report will be generated in the coverage/ directory
 ```
+
+## Changelog
+
+- **2.0.2** — PHP >= 8.2; PHPUnit 11.
+- **2.0.1** — `JDZ\Utils\DataInterface`, implemented by `Data`.
+- **2.0.0** — Mutators (`set`, `sets`, `def`, `erase`) are typed `: self` for chaining; `withPreserveNulls()` replaces `preserveNulls()` (kept as a deprecated alias); tests and examples added.
 
 ## License
 
