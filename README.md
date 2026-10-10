@@ -250,6 +250,7 @@ composer test-coverage
 
 ## Changelog
 
+- **2.0.3** — `has('0')` finds the key; `erase()` removes a key holding a preserved null; `set()` through a scalar at a numeric key replaces it instead of a TypeError.
 - **2.0.2** — PHP >= 8.2; PHPUnit 11.
 - **2.0.1** — `JDZ\Utils\DataInterface`, implemented by `Data`.
 - **2.0.0** — Mutators (`set`, `sets`, `def`, `erase`) are typed `: self` for chaining; `withPreserveNulls()` replaces `preserveNulls()` (kept as a deprecated alias); tests and examples added.
