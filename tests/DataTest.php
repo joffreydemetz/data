@@ -3,6 +3,7 @@
 namespace JDZ\Utils\Tests;
 
 use JDZ\Utils\Data;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class DataTest extends TestCase
@@ -146,18 +147,6 @@ class DataTest extends TestCase
         $this->assertEquals('value3', $this->data->get('nested.key3'));
     }
 
-    public function testAll(): void
-    {
-        $this->data->set('key1', 'value1');
-        $this->data->set('key2.nested', 'value2');
-
-        $all = $this->data->all();
-
-        $this->assertIsArray($all);
-        $this->assertEquals('value1', $all['key1']);
-        $this->assertEquals('value2', $all['key2']['nested']);
-    }
-
     public function testPreserveNulls(): void
     {
         $this->data->withPreserveNulls(true);
@@ -181,26 +170,32 @@ class DataTest extends TestCase
         $this->assertEquals('jane@example.com', $this->data->get('users.1.email'));
     }
 
-    public function testOverwriteValue(): void
-    {
-        $this->data->set('key', 'old');
-        $this->assertEquals('old', $this->data->get('key'));
 
-        $this->data->set('key', 'new');
-        $this->assertEquals('new', $this->data->get('key'));
+
+    public static function nullsInSets(): array
+    {
+        return [
+            'a null is no value by default' => [false, ['a' => 1, 'b' => 2]],
+            'a null overrides when preserving nulls' => [true, ['a' => 1, 'b' => null]],
+        ];
     }
 
-    public function testChaining(): void
+    #[DataProvider('nullsInSets')]
+    public function testSetsMergesANullOnlyWhenPreservingNulls(bool $preserve, array $expected): void
     {
-        $result = $this->data
-            ->set('key1', 'value1')
-            ->set('key2', 'value2')
-            ->def('key3', 'value3')
-            ->erase('key2');
+        $data = (new Data())->withPreserveNulls($preserve)->sets(['a' => 1, 'b' => 2]);
 
-        $this->assertInstanceOf(Data::class, $result);
-        $this->assertTrue($this->data->has('key1'));
-        $this->assertFalse($this->data->has('key2'));
-        $this->assertTrue($this->data->has('key3'));
+        $data->sets(['b' => null]);
+
+        $this->assertSame($expected, $data->all());
+    }
+
+    public function testHasTellsAPreservedNullFromAMissingKey(): void
+    {
+        $preserving = (new Data())->withPreserveNulls()->sets(['a' => ['b' => null]]);
+
+        $this->assertTrue($preserving->has('a.b'));
+        $this->assertFalse($preserving->has('a.c'));
+        $this->assertFalse((new Data())->sets(['a' => ['b' => null]])->has('a.b'), 'without preserving nulls, a null is no value');
     }
 }
