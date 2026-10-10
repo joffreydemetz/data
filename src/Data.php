@@ -71,7 +71,8 @@ class Data implements DataInterface
       $key = is_numeric($key) ? (int)$key : $key;
 
       // If the node doesn't exist or is not compliant, initialize it
-      if (!isset($node[$key]) || (!is_array($node[$key]) && $key !== (int)$key)) {
+      // (a scalar at a numeric key used to be kept, then indexed by the next key: TypeError)
+      if (!isset($node[$key]) || !is_array($node[$key])) {
         $node[$key] = [];
       }
 
@@ -170,7 +171,8 @@ class Data implements DataInterface
    */
   public function has(string $path): bool
   {
-    if (empty($path)) {
+    // not empty(): the key '0' exists
+    if ('' === $path) {
       return false;
     }
 
@@ -220,7 +222,8 @@ class Data implements DataInterface
 
     // Handle the final key
     $lastKey = is_numeric($lastKey) ? (int)$lastKey : $lastKey;
-    if (isset($node[$lastKey])) {
+    // array_key_exists, not isset: a preserved null is erased too
+    if (array_key_exists($lastKey, $node)) {
       unset($node[$lastKey]); // Delete the final key
     }
 

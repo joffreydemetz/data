@@ -170,7 +170,42 @@ class DataTest extends TestCase
         $this->assertEquals('jane@example.com', $this->data->get('users.1.email'));
     }
 
+    /**
+     * has() used empty($path): the key '0' was never found (get('0') was).
+     */
+    public function testHasFindsTheKeyZero(): void
+    {
+        $data = (new Data())->sets(['0' => 'zero']);
 
+        $this->assertTrue($data->has('0'));
+        $this->assertFalse($data->has(''));
+    }
+
+    /**
+     * erase() used isset(): with preserveNulls, a key holding null stayed.
+     */
+    public function testEraseRemovesAPreservedNull(): void
+    {
+        $data = (new Data())->withPreserveNulls()->sets(['a' => null, 'b' => 1]);
+
+        $data->erase('a');
+
+        $this->assertFalse($data->has('a'));
+        $this->assertSame(['b' => 1], $data->all());
+    }
+
+    /**
+     * A path through a scalar turns it into an array; at a numeric key it was a
+     * TypeError (string offset on a string).
+     */
+    public function testSetThroughAScalarAtANumericKeyReplacesIt(): void
+    {
+        $data = (new Data())->sets(['list' => ['x', 'y']]);
+
+        $data->set('list.0.name', 'z');
+
+        $this->assertSame(['list' => [['name' => 'z'], 'y']], $data->all());
+    }
 
     public static function nullsInSets(): array
     {
